@@ -16,10 +16,10 @@ services:
             - xpack.security.enabled=false
             - discovery.type=single-node
         # Set the locked-in-memory address space to unlimited.
-            ulimits:
-                memlock:
-                    soft: -1
-                    hard: -1
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
     kibana:
         # The following will make sure that Kibana runs only after elasticsearch is up.
         depends_on:
