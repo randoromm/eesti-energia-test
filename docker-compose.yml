@@ -10,6 +10,12 @@ services:
             - 9200:9200
         networks:
             - elastic-net
+        # Health check to check that elasticsearch is fully up.
+        healthcheck:
+            test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"] 
+            interval: 30s
+            timeout: 30s
+            retries: 2
         # We disable security for development purposes, so that we don't need authentication. Security should be enabled in PROD.
         # Single node to elect this node as master and to not join any other cluster.
         environment:
@@ -26,9 +32,10 @@ services:
                 max-size: "200k"
                 max-file: "10"
     kibana:
-        # The following will make sure that Kibana runs only after elasticsearch is up.
+        # The following will make sure that Kibana runs only after elasticsearch is up and healthy.
         depends_on:
-            - elasticsearch
+            elasticsearch:
+                condition: service_healthy
         image: kibana:8.7.1
         container_name: kibana
         volumes:
