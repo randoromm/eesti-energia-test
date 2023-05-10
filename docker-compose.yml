@@ -20,6 +20,11 @@ services:
             memlock:
                 soft: -1
                 hard: -1
+        logging:
+            driver: "local"
+            options:
+                max-size: "200k"
+                max-file: "10"
     kibana:
         # The following will make sure that Kibana runs only after elasticsearch is up.
         depends_on:
@@ -34,6 +39,11 @@ services:
             - elastic-net
         environment:
             - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+        logging:
+            driver: "local"
+            options:
+                max-size: "200k"
+                max-file: "10"
 volumes:
     elasticsearch-volume:
         driver: local
