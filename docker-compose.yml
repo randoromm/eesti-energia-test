@@ -1,10 +1,39 @@
-version: "4.19"
+version: "3.8"
 
 services:
-    client:
-        image: nginx
-        ports:
-            - 8000:80
-        volumes:
-            - ./src:/usr/share/nginx/html
-
+  elasticsearch:
+    image: elasticsearch:8.7.1
+    container_name: elasticsearch
+    volumes:
+      - elasticsearch-volume:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    restart: always
+    # We disable security for development purposes, so that we don't need authentication. Security should be enabled in PROD.
+    # Single node to elect this node as master and to not join any other cluster.
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    # Set the locked-in-memory address space to unlimited.
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  kibana:
+    # The following will make sure that Kibana runs only after elasticsearch is up.
+    depends_on:
+      - elasticsearch
+    image: kibana:8.7.1
+    container_name: kibana
+    volumes:
+      - kibana-volume:/usr/share/kibana/data
+    ports:
+     - 5601:5601
+    # Define elasticsearch host, for the test purposes, before bridging them to the same network.
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+volumes:
+  elasticsearch-volume:
+    driver: local
+  kibana-volume:
+    driver: local
