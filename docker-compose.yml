@@ -5,7 +5,7 @@ services:
         image: elasticsearch:8.7.1
         container_name: elasticsearch
         volumes:
-            - elasticsearch-volume:/usr/share/elasticsearch/data
+            - ./elasticsearch-volume:/usr/share/elasticsearch/data
         ports:
             - 9200:9200
         networks:
@@ -39,13 +39,18 @@ services:
         image: kibana:8.7.1
         container_name: kibana
         volumes:
-            - kibana-volume:/usr/share/kibana/data
+            - ./kibana-volume:/usr/share/kibana/data
         ports:
             - 5601:5601
         networks:
             - elastic-net
         environment:
             - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+        healthcheck:
+            test: curl --silent --fail localhost:5601/api/task_manager/_health || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 5
         logging:
             driver: "local"
             options:
