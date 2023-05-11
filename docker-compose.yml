@@ -4,7 +4,7 @@ services:
     # Setup service is created in accordance to elasticsearch documentation.
     # Refer to: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
     setup:
-        image:
+        image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
         volumes:
             - ./certs:/usr/share/elasticsearch/config/certs
         user: "0"
@@ -56,7 +56,7 @@ services:
         depends_on:
             setup:
                 condition: service_healthy
-        image: elasticsearch:8.7.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION} 
         container_name: elasticsearch
         volumes:
             - ./elasticsearch-volume:/usr/share/elasticsearch/data
@@ -107,7 +107,7 @@ services:
         depends_on:
             elasticsearch:
                 condition: service_healthy
-        image: kibana:8.7.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION} 
         container_name: kibana
         volumes:
             - ./kibana-volume:/usr/share/kibana/data
