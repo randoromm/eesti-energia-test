@@ -7,88 +7,38 @@ services:
         image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
         volumes:
             - certs:/usr/share/elasticsearch/config/certs
+            - ./scripts:/usr/share/elasticsearch/scripts
+        networks:
+            - elastic-net
         user: "0"
         command: >
-            bash -c '
-                if [ x${ELASTIC_PASSWORD} == x ]; then
-                    echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
-                    exit 1;
-                elif [ x${KIBANA_PASSWORD} == x ]; then
-                    echo "Set the KIBANA_PASSWORD environment variable in the .env file";
-                    exit 1;
-                fi;
-                if [ ! -f config/certs/ca.zip ]; then
-                    echo "Creating CA";
-                    bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
-                    unzip config/certs/ca.zip -d config/certs;
-                fi;
-                if [ ! -f config/certs/certs.zip ]; then
-                    echo "Creating certs";
-                    echo -ne \
-                    "instances:\n"\
-                    "  - name: elas1\n"\
-                    "    dns:\n"\
-                    "      - elas1\n"\
-                    "      - localhost\n"\
-                    "    ip:\n"\
-                    "      - 127.0.0.1\n"\
-                    > config/certs/instances.yml;
-                    bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
-                    unzip config/certs/certs.zip -d config/certs;
-                fi;
-                echo "Setting file permissions"
-                chown -R root:root config/certs;
-                find . -type d -exec chmod 750 \{\} \;;
-                find . -type f -exec chmod 640 \{\} \;;
-                echo "Waiting for Elasticsearch availability";
-                until curl -s --cacert config/certs/ca/ca.crt https://elas1:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
-                echo "Setting kibana_system password";
-                until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elas1:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
-                echo "All done!";
-            '
-        healthcheck:
-            test: ["CMD-SHELL", "[ -f config/certs/elas1/elas1.crt ]"]
-            interval: 1s
-            timeout: 5s
-            retries: 120
-
-    elas1:
+            bash -c 'bash scripts/certSetup.sh ${ELASTIC_PASSWORD} ${KIBANA_PASSWORD}'
+    
+    esnode1:
         depends_on:
-            setup:
-                condition: service_healthy
+            - setup
         image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION} 
-        container_name: elas1
         volumes:
             - certs:/usr/share/elasticsearch/config/certs
             - elasticsearch-volume:/usr/share/elasticsearch/data
         ports:
-            - 9200:9200
+            - ${ES_PORT}:9200
         networks:
             - elastic-net
-        # Health check to check that elasticsearch is fully up.
-        healthcheck:
-            test: ["CMD-SHELL", "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'"] 
-            interval: 10s
-            timeout: 10s 
-            retries: 120
-        # We disable security for development purposes, so that we don't need authentication. Security should be enabled in PROD.
-        # Single node to elect this node as master and to not join any other cluster.
         environment:
-            #- xpack.security.enabled=false
-            #- discovery.type=single-node
-            - node.name=elas1
-            - cluster.name=${CLUSTER_NAME}
-            - cluster.initial_master_nodes=elas1
+            - node.name=esnode1
             - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
             - bootstrap.memory_lock=true
+            - discovery.type=single-node
             - xpack.security.enabled=true
             - xpack.security.http.ssl.enabled=true
-            - xpack.security.http.ssl.key=certs/elas1/elas1.key
-            - xpack.security.http.ssl.certificate=certs/elas1/elas1.crt
-            - xpack.security.http.ssl.certificate_authorities=certs/elas1/elas1.crt
+            - xpack.security.http.ssl.key=certs/esnode1/esnode1.key
+            - xpack.security.http.ssl.certificate=certs/esnode1/esnode1.crt
+            - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+            - xpack.security.http.ssl.verification_mode=certificate
             - xpack.security.transport.ssl.enabled=true
-            - xpack.security.transport.ssl.key=certs/elas1/elas1.key
-            - xpack.security.transport.ssl.certificate=certs/elas1/elas1.crt
+            - xpack.security.transport.ssl.key=certs/esnode1/esnode1.key
+            - xpack.security.transport.ssl.certificate=certs/esnode1/esnode1.crt
             - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
             - xpack.security.transport.ssl.verification_mode=certificate
             - xpack.license.self_generated.type=${LICENSE}
@@ -98,6 +48,12 @@ services:
             memlock:
                 soft: -1
                 hard: -1
+        ## Health check to check that elasticsearch is fully up.
+        healthcheck:
+            test: ["CMD-SHELL", "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'"] 
+            interval: 10s
+            timeout: 10s 
+            retries: 10
         logging:
             driver: "local"
             options:
@@ -106,20 +62,19 @@ services:
     kibana:
         # The following will make sure that Kibana runs only after elasticsearch is up and healthy.
         depends_on:
-            elas1:
+            esnode1:
                 condition: service_healthy
         image: docker.elastic.co/kibana/kibana:${STACK_VERSION} 
-        container_name: kibana
         volumes:
             - certs:/usr/share/kibana/config/certs
             - kibana-volume:/usr/share/kibana/data
         ports:
-            - 5601:5601
+            - ${KIBANA_PORT}:5601
         networks:
             - elastic-net
         environment:
             - SERVERNAME=kibana
-            - ELASTICSEARCH_HOSTS=https://elas1:9200
+            - ELASTICSEARCH_HOSTS=https://esnode1:9200
             - ELASTICSEARCH_USERNAME=kibana_system
             - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
             - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
@@ -135,6 +90,8 @@ services:
                 max-file: "10"
 volumes:
     certs:
+        driver: local
+    scripts:
         driver: local
     elasticsearch-volume:
         driver: local
