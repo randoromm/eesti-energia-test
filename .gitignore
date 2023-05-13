@@ -1,4 +1,6 @@
 kibana-volume/
 elasticsearch-volume/
 src/
-.env
+.*
+!.gitignore
+
