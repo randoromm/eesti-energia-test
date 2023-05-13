@@ -50,12 +50,12 @@ services:
                 hard: -1
         ## Health check to check that elasticsearch is fully up.
         healthcheck:
-            test: ["CMD-SHELL", "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'"] 
+            test: curl -s --cacert config/certs/ca/ca.crt https://localhost:9200/_cluster/health?wait_for_status=green&timeout=50s || exit 1
             interval: 10s
             timeout: 10s 
             retries: 10
         logging:
-            driver: "local"
+            driver: "json-file"
             options:
                 max-size: "200k"
                 max-file: "10"
@@ -78,13 +78,13 @@ services:
             - ELASTICSEARCH_USERNAME=kibana_system
             - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
             - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
-        #healthcheck:
-            #test: curl --silent --fail localhost:5601/api/task_manager/_health || exit 1
-            #interval: 30s
-            #timeout: 30s
-            #retries: 5
+        healthcheck:
+            test: curl -s -f --cacert config/certs/ca/ca.crt -u elastic:${KIBANA_PASSWORD} localhost:5601/api/task_manager/_health || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 5
         logging:
-            driver: "local"
+            driver: "json-file"
             options:
                 max-size: "200k"
                 max-file: "10"
