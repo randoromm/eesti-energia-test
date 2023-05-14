@@ -17,3 +17,6 @@ As last week and the weekend was a bit hectic for me, there are quite a few aspe
 6. Configure Ansible properly with (ex. /etc/hosts, config, setup j2 templates).
 7. Create Ansible Playbook requests to check if index and data view with that name already exist. (Currently just ignoring the failed PUT/POST requests).
 8. Create Ansible it's own access for the endpoint testing. More security!
+
+## Pre-Requirements
+1. Host machine for docker **must support bash** in order to run the .initDockerCompose.sh script (**Linux, WSL2, MacOS, RaspberryPi etc..**)
