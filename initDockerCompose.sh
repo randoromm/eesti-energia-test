@@ -12,9 +12,12 @@ do
         echo "$container_name exit code: $(docker inspect "${line}" --format='{{.State.ExitCode}}')" 
         echo -e "${RED}Service UNHEALTHY! Canceling Startup!!!${NC}"
         docker-compose down
+        exit 1
     else
         container_name="$(docker inspect "${line}" --format '{{ .Name }}')"
         echo "$container_name exit code: $(docker inspect "${line}" --format='{{.State.ExitCode}}')" 
         echo -e "${GREEN}Service Healthy!${NC}"
     fi
 done
+echo -e "Use '${RED}docker-compose up${NC}' to attach and see the logs in real time OR '${RED}docker-compose logs${NC}' to extract the logs from the files."
+echo -e "Kibana is ${GREEN}available${NC} at http://localhost:5601"
