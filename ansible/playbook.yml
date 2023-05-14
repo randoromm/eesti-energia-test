@@ -6,10 +6,8 @@
   vars:
     kibana: "http://kibana:5601"
     kibaendpoint: "/api/task_manager/_health"
-    kibapw: "Mahlane123"
     elas1: "http://elas1:9200"
     elasendpoint: "/"
-    elaspw: "Mahlane123"
 
   tasks:
   - name: kibana health check

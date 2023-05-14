@@ -95,9 +95,7 @@ services:
         volumes:
             - ./ansible:/ansible
         command: >
-            bash -c '
-                ansible-playbook /ansible/playbook.yml
-            '
+            bash -c 'ansible-playbook /ansible/playbook.yml -e "elaspw=${ELASTIC_PASSWORD} kibapw=${KIBANA_PASSWORD}"'
         networks:
             - elastic-net
         logging:
