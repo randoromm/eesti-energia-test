@@ -8,8 +8,10 @@
     kibaendpoint: "/api/task_manager/_health"
     elas1: "https://esnode1:9200"
     elasendpoint: "/_cluster/health?wait_for_status=yellow&timeout=60s"
-    index_name: "random-index"
-    index_pattern: "random-index-pattern"
+    index_name: "random_index"
+    index_pattern: "random_index*"
+    pattern_check_ep: "/api/saved_objects/_find?type=index-pattern&fields=title"
+    create_pattern_ep: "/api/data_views/data_view"
 
   tasks:
   - name: kibana health check
@@ -17,11 +19,11 @@
       url: "{{ kibana }}{{ kibaendpoint }}"
       force_basic_auth: yes
       user: "elastic"
-      password: "{{ kibapw }}"
+      password: "{{ elaspw }}"
       method: GET
       status_code: 200
       timeout: 120
-    register: result2
+    register: kibana_healthcheck 
 
   - name: elastic health check 
     ansible.builtin.uri:
@@ -35,10 +37,61 @@
       method: GET 
       status_code: 200
       timeout: 120
+    register: elas_healthcheck
+    #ignore_errors: yes
+
+  - name: create index in elas1 
+    ansible.builtin.uri:
+      url: "{{ elas1 }}/{{ index_name }}"
+      ca_path: /usr/share/ansible/config/certs/ca/ca.crt
+      client_cert: /usr/share/ansible/config/certs/esnode1/esnode1.crt
+      client_key: /usr/share/ansible/config/certs/esnode1/esnode1.key
+      user: "elastic"
+      password: "{{ elaspw }}"
+      method: PUT 
+      timeout: 120
     register: create_elas_index 
+    ignore_errors: yes
+
+  - name: create kibana data view 
+    ansible.builtin.uri:
+      url: "{{ kibana }}{{ create_pattern_ep }}"
+      force_basic_auth: yes
+      user: "elastic"
+      password: "{{ elaspw }}"
+      method: POST 
+      body_format: json
+      body:
+        override: false
+        data_view:
+          title: "{{ index_pattern }}"
+          name: "{{ index_name }} pattern"
+      headers:
+        Content-Type: application/json
+        kbn-xsrf: true
+      timeout: 120
+    register: kibana_create_pattern
+    ignore_errors: yes
+
+  - name: create index in elas1 
+    ansible.builtin.uri:
+      url: "{{ elas1 }}/{{ index_name }}/_doc"
+      ca_path: /usr/share/ansible/config/certs/ca/ca.crt
+      client_cert: /usr/share/ansible/config/certs/esnode1/esnode1.crt
+      client_key: /usr/share/ansible/config/certs/esnode1/esnode1.key
+      user: "elastic"
+      password: "{{ elaspw }}"
+      method: POST
+      body_format: json 
+      body:
+        pet: "{{ ['Koer', 'Kass', 'Hamster', 'Merisiga', 'Elevant'] | random }}"
+        amount: "{{ range(1, 999) | random }}"
+      status_code: 201
+      timeout: 120
+    register: post_data 
     #ignore_errors: yes
 
   - name: debug
     ansible.builtin.debug:
-      var: create_elas_index 
+      var: post_data 
 
