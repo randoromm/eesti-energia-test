@@ -87,6 +87,21 @@ services:
             options:
                 max-size: "200k"
                 max-file: "10"
+    ansible:
+        depends_on:
+            - esnode1
+            - kibana
+        build: .
+        volumes:
+            - ./ansible:/ansible
+        command: ansible-playbook /ansible/playbook.yml
+        networks:
+            - elastic-net
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "200k"
+                max-file: "10"
 volumes:
     certs:
         driver: local
@@ -95,6 +110,8 @@ volumes:
     elasticsearch-volume:
         driver: local
     kibana-volume:
+        driver: local
+    ansible:
         driver: local
 networks:
     elastic-net:

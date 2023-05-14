@@ -1,0 +1,10 @@
+---
+# Print hello world
+- name: Hello
+  hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+  - name: Print hello world
+    debug:
+      msg: Hello, world!
