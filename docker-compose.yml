@@ -43,7 +43,6 @@ services:
             - xpack.security.transport.ssl.verification_mode=certificate
             - xpack.license.self_generated.type=${LICENSE}
         mem_limit: ${MEM_LIMIT}
-        # Set the locked-in-memory address space to unlimited.
         ulimits:
             memlock:
                 soft: -1
