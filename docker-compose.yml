@@ -89,12 +89,15 @@ services:
                 max-file: "10"
     ansible:
         depends_on:
-            - esnode1
-            - kibana
+            kibana:
+                condition: service_healthy
         build: .
         volumes:
             - ./ansible:/ansible
-        command: ansible-playbook /ansible/playbook.yml
+        command: >
+            bash -c '
+                ansible-playbook /ansible/playbook.yml
+            '
         networks:
             - elastic-net
         logging:

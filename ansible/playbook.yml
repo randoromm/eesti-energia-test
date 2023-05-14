@@ -2,9 +2,29 @@
 # Print hello world
 - name: Hello
   hosts: 127.0.0.1
-  connection: local
+  become: false
+  vars:
+    kibana: "http://kibana:5601"
+    kibaendpoint: "/api/task_manager/_health"
+    kibapw: "Mahlane123"
+    elas1: "http://elas1:9200"
+    elasendpoint: "/"
+    elaspw: "Mahlane123"
 
   tasks:
-  - name: Print hello world
-    debug:
-      msg: Hello, world!
+  - name: kibana health check
+    ansible.builtin.uri:
+      url: "{{ kibana }}{{ kibaendpoint }}"
+      #validate_certs: no
+      force_basic_auth: yes
+      user: "elastic"
+      password: "{{ kibapw }}"
+      method: GET
+      status_code: 200
+      timeout: 120
+    register: result
+
+  - name: debug
+    ansible.builtin.debug:
+      var: result 
+
