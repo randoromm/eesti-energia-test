@@ -93,6 +93,7 @@ services:
                 condition: service_healthy
         build: .
         volumes:
+            - certs:/usr/share/ansible/config/certs
             - ./ansible:/ansible
         command: >
             bash -c 'ansible-playbook /ansible/playbook.yml -e "elaspw=${ELASTIC_PASSWORD} kibapw=${KIBANA_PASSWORD}"'

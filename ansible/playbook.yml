@@ -6,23 +6,39 @@
   vars:
     kibana: "http://kibana:5601"
     kibaendpoint: "/api/task_manager/_health"
-    elas1: "http://elas1:9200"
-    elasendpoint: "/"
+    elas1: "https://esnode1:9200"
+    elasendpoint: "/_cluster/health?wait_for_status=yellow&timeout=60s"
+    index_name: "random-index"
+    index_pattern: "random-index-pattern"
 
   tasks:
   - name: kibana health check
     ansible.builtin.uri:
       url: "{{ kibana }}{{ kibaendpoint }}"
-      #validate_certs: no
       force_basic_auth: yes
       user: "elastic"
       password: "{{ kibapw }}"
       method: GET
       status_code: 200
       timeout: 120
-    register: result
+    register: result2
+
+  - name: elastic health check 
+    ansible.builtin.uri:
+      url: "{{ elas1 }}{{ elasendpoint }}"
+      #force_basic_auth: yes
+      ca_path: /usr/share/ansible/config/certs/ca/ca.crt
+      client_cert: /usr/share/ansible/config/certs/esnode1/esnode1.crt
+      client_key: /usr/share/ansible/config/certs/esnode1/esnode1.key
+      user: "elastic"
+      password: "{{ elaspw }}"
+      method: GET 
+      status_code: 200
+      timeout: 120
+    register: create_elas_index 
+    #ignore_errors: yes
 
   - name: debug
     ansible.builtin.debug:
-      var: result 
+      var: create_elas_index 
 
