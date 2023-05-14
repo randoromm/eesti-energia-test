@@ -4,8 +4,18 @@ Repository for the job interview task of Eesti Energia SRE position
 ## Preword
 Thanks for the interesting and well built task. It was defenitely interesting and fun to setup. Learned a lot of new things.
 As last week and the weekend was a bit hectic for me, there are quite a few aspects that i would have liked to solve more elegantly if i had more time.
+I will add list of improvements i would make if i had more time to the bottom of this README.
 
-### Improvements i would make:
+## Pre-Requirements
+1. Host machine for docker **must support bash** in order to run the .initDockerCompose.sh script (**Linux, WSL2, MacOS, RaspberryPi, Linux VM etc..**)
+     * If you are on windows, Windows Subsystem For Linux  (WSL) is a good option: https://learn.microsoft.com/en-us/windows/wsl/install
+3. Install the latest version of Docker (and docker compose): https://docs.docker.com/get-docker/
+
+## Setup
+First clone the repository:
+`git clone https://github.com/randoromm/eesti-energia-test.git`
+
+## Improvements i would make:
 1. Setup API keys for Kibana for more security.
 2. Improve elasticsearch SSL certificate management for more security.
       * Could also implement token/api key system here for more security.
@@ -17,13 +27,4 @@ As last week and the weekend was a bit hectic for me, there are quite a few aspe
 6. Configure Ansible properly with (ex. /etc/hosts, config, setup j2 templates).
 7. Create Ansible Playbook requests to check if index and data view with that name already exist. (Currently just ignoring the failed PUT/POST requests).
 8. Create Ansible it's own access for the endpoint testing. More security!
-
-## Pre-Requirements
-1. Host machine for docker **must support bash** in order to run the .initDockerCompose.sh script (**Linux, WSL2, MacOS, RaspberryPi, Linux VM etc..**)
-     * If you are on windows, Windows Subsystem For Linux  (WSL) is a good option: https://learn.microsoft.com/en-us/windows/wsl/install
-3. Install the latest version of Docker (and docker compose): https://docs.docker.com/get-docker/
-
-## Setup
-First clone the repository:
-`git clone https://github.com/randoromm/eesti-energia-test/`
 
