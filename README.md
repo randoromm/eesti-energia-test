@@ -24,6 +24,7 @@ cd eesti-energia-test/
     * Write passwords without quotation marks right after the = sign.
     * Passwords must be alphanumeric (only numbers and letters).
     * Change the ports if any of these are in use for you.
+ 
 4. Run the initialisation script:
 ~~~~
 bash initDockerCompose.sh
