@@ -14,11 +14,11 @@ I will add list of improvements i would make if i had more time to the bottom of
 ## Setup
 1. Clone the repository:
 ~~~~
-git clone https://github.com/randoromm/eesti-energia-test.git
+$ git clone https://github.com/randoromm/eesti-energia-test.git
 ~~~~
 2. Navigate to the root directory of the repository
 ~~~~
-cd eesti-energia-test/
+$ cd eesti-energia-test/
 ~~~~
 3. Setup the passwords and ports in ".env" file with your favourite text editor (Note: it's a hidden file):
     * Write passwords without quotation marks right after the = sign.
@@ -27,38 +27,38 @@ cd eesti-energia-test/
  
 4. Run the initialisation script:
 ~~~~
-bash initDockerCompose.sh
+$ bash initDockerCompose.sh
 ~~~~
 **OR Alternatively**, without the "auto fail setup" feature you can run the compose file manually:
 ~~~~
-docker-compose up --wait
+$ docker-compose up --wait
 ~~~~
 
 ## Management
 * Read the log files
 ~~~~
-docker-compose logs {OPTIONAL:$SERVICE_NAME}
+$ docker-compose logs {OPTIONAL:$SERVICE_NAME}
 ~~~~
 examples:
 ~~~~
-docker-compose logs ansible
-docker-compose logs esnode1
-docker-compose logs kibana
-docker-compose logs setup
-docker-compose logs
+$ docker-compose logs ansible
+$ docker-compose logs esnode1
+$ docker-compose logs kibana
+$ docker-compose logs setup
+$ docker-compose logs
 ~~~~
 * Attach to the containers for STDOUT live log output (CTRL + C to exit)
 ~~~~
-docker-compose up
+$ docker-compose up
 ~~~~
 * Clean install - in case of any issues. **NB!! Removes all the volumes with data**:
 ~~~~
-docker-compose down -v
-bash initDockerCompose.sh
+$ docker-compose down -v
+$ bash initDockerCompose.sh
 ~~~~
-* Run Ansible Playbook without rebuilding ElasticSearch and Kibana:
+* Run Ansible Playbook without rebuilding ElasticSearch and Kibana (You can change the debug output in playbook.yml to test different tasks):
 ~~~~
-TBA.
+$ docker-compose up ansible
 ~~~~
 
 ## Improvements i would make:
