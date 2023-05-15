@@ -24,10 +24,10 @@ cd eesti-energia-test/
 ~~~~
 bash initDockerCompose.sh
 ~~~~
-   3.1 Alternatively, without the "auto fail setup" feature you can run the compose file manually:
-   ~~~~
-   docker-compose up --wait
-   ~~~~
+**OR Alternatively**, without the "auto fail setup" feature you can run the compose file manually:
+~~~~
+docker-compose up --wait
+~~~~
 
 ## Management
 * Read the log files
