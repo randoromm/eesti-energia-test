@@ -20,7 +20,7 @@ git clone https://github.com/randoromm/eesti-energia-test.git
 ~~~~
 cd eesti-energia-test/
 ~~~~
-3. Setup the passwords and ports in ".env" file with your favourite text editor:
+3. Setup the passwords and ports in ".env" file with your favourite text editor (Note: it's a hidden file):
     * Write passwords without quotation marks right after the = sign.
     * Passwords must be alphanumeric (only numbers and letters).
     * Change the ports if any of these are in use for you.
