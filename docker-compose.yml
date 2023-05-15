@@ -1,8 +1,6 @@
 version: "3.8"
 
 services:
-    # Setup service is created in accordance to elasticsearch documentation.
-    # Refer to: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
     setup:
         image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
         volumes:
@@ -12,7 +10,7 @@ services:
             - elastic-net
         user: "0"
         command: >
-            bash -c 'bash scripts/certSetup.sh ${ELASTIC_PASSWORD} ${KIBANA_PASSWORD}'
+            bash -c 'bash scripts/certSetup.sh ${ELASTIC_PASSWORD} ${KIBANA_PASSWORD}' 
     
     esnode1:
         depends_on:
@@ -53,6 +51,7 @@ services:
             interval: 10s
             timeout: 10s 
             retries: 10
+        ## Set up log rotations to files (happens in background)
         logging:
             driver: "json-file"
             options:
@@ -78,7 +77,7 @@ services:
             - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
             - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
         healthcheck:
-            test: curl -s -f --cacert config/certs/ca/ca.crt -u elastic:${KIBANA_PASSWORD} localhost:5601/api/task_manager/_health || exit 1
+            test: curl -s -f --cacert config/certs/ca/ca.crt -u elastic:${ELASTIC_PASSWORD} localhost:5601/api/task_manager/_health || exit 1
             interval: 30s
             timeout: 30s
             retries: 5
@@ -96,7 +95,7 @@ services:
             - certs:/usr/share/ansible/config/certs
             - ./ansible:/ansible
         command: >
-            bash -c 'ansible-playbook /ansible/playbook.yml -e "elaspw=${ELASTIC_PASSWORD} kibapw=${KIBANA_PASSWORD}"'
+            bash -c 'ansible-playbook /ansible/playbook.yml -e "elaspw=${ELASTIC_PASSWORD}"'
         networks:
             - elastic-net
         logging:

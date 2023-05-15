@@ -20,4 +20,4 @@ do
     fi
 done
 echo -e "Use '${RED}docker-compose up${NC}' to attach and see the logs in real time OR '${RED}docker-compose logs${NC}' to extract the logs from the files."
-echo -e "Kibana is ${GREEN}available${NC} at http://localhost:5601"
+echo -e "Kibana is ${GREEN}available${NC} at localhost"
