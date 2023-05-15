@@ -65,6 +65,7 @@ TBA.
 1. Setup API keys for Kibana for more security.
 2. Improve elasticsearch SSL certificate management for more security.
      * Could also implement token/api key system here for more security.
+     * Use newly learned Ansible for certificates setup process.
 4. Encrypt .env file for more security.
 5. Create Dockerfiles for Elasticsearch and Kibana container building.
      * This would allow better healthchecks control and failing the compose setup would be easier and more elegant.
