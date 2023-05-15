@@ -20,7 +20,11 @@ git clone https://github.com/randoromm/eesti-energia-test.git
 ~~~~
 cd eesti-energia-test/
 ~~~~
-3. Run the initialisation script:
+3. Setup the passwords and ports in ".env" file with your favourite text editor:
+    * Write passwords without quotation marks right after the = sign.
+    * Passwords must be alphanumeric (only numbers and letters).
+    * Change the ports if any of these are in use for you.
+4. Run the initialisation script:
 ~~~~
 bash initDockerCompose.sh
 ~~~~
