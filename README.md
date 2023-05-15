@@ -40,10 +40,20 @@ docker-compose logs ansible
 docker-compose logs esnode1
 docker-compose logs kibana
 docker-compose logs setup
+docker-compose logs
 ~~~~
-* Attach to the containers for STDOUT live log output
+* Attach to the containers for STDOUT live log output (CTRL + C to exit)
 ~~~~
 docker-compose up
+~~~~
+* Clean install - in case of any issues. **NB!! Removes all the volumes with data**:
+~~~~
+docker-compose down -v
+bash initDockerCompose.sh
+~~~~
+* Run Ansible Playbook without rebuilding ElasticSearch and Kibana:
+~~~~
+TBA.
 ~~~~
 
 ## Improvements i would make:
