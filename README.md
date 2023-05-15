@@ -24,7 +24,9 @@ $ cd eesti-energia-test/
     * Write passwords without quotation marks right after the = sign.
     * Passwords must be alphanumeric (only numbers and letters).
     * Change the ports if any of these are in use for you.
- 
+~~~~
+$ vim .env
+~~~~
 4. Run the initialisation script:
 ~~~~
 $ bash initDockerCompose.sh
@@ -70,9 +72,10 @@ $ docker-compose up ansible
 5. Create Dockerfiles for Elasticsearch and Kibana container building.
      * This would allow better healthchecks control and failing the compose setup would be easier and more elegant.
      * OR Write the "initDockerCompose.sh" file in another scripting language to support all host machine environments (ex. Python).
-     * The "initDockerCompose.sh could also be improved for smoother working and stdout.
+     * The "initDockerCompose.sh" could also be improved for smoother working and stdout.
 6. Configure Ansible properly with (ex. /etc/hosts, config, setup j2 templates).
      * Bonus Idea: Create a separate network for Ansible container, setup /etc/hosts and test the API automatically from external network.
 7. Create Ansible Playbook requests to check if index and data view with that name already exist. (Currently just ignoring the failed PUT/POST requests).
 8. Create Ansible it's own Kibana and Elasticsearch user access for the endpoint testing. More security!
+9. Cleanup all the scripts/code, improve syntax.
 
