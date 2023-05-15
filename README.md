@@ -64,13 +64,14 @@ TBA.
 ## Improvements i would make:
 1. Setup API keys for Kibana for more security.
 2. Improve elasticsearch SSL certificate management for more security.
-      * Could also implement token/api key system here for more security.
+     * Could also implement token/api key system here for more security.
 4. Encrypt .env file for more security.
 5. Create Dockerfiles for Elasticsearch and Kibana container building.
      * This would allow better healthchecks control and failing the compose setup would be easier and more elegant.
      * OR Write the "initDockerCompose.sh" file in another scripting language to support all host machine environments (ex. Python).
      * The "initDockerCompose.sh could also be improved for smoother working and stdout.
 6. Configure Ansible properly with (ex. /etc/hosts, config, setup j2 templates).
+     * Bonus Idea: Create a separate network for Ansible container, setup /etc/hosts and test the API automatically from external network.
 7. Create Ansible Playbook requests to check if index and data view with that name already exist. (Currently just ignoring the failed PUT/POST requests).
 8. Create Ansible it's own access for the endpoint testing. More security!
 
