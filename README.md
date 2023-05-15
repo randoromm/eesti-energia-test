@@ -13,21 +13,38 @@ I will add list of improvements i would make if i had more time to the bottom of
 
 ## Setup
 1. Clone the repository:
-`git clone https://github.com/randoromm/eesti-energia-test.git`
+~~~~
+git clone https://github.com/randoromm/eesti-energia-test.git
+~~~~
 2. Navigate to the root directory of the repository
-`cd eesti-energia-test/`
+~~~~
+cd eesti-energia-test/
+~~~~
 3. Run the initialisation script:
-`bash initDockerCompose.sh`
-3.1 Alternatively, without the "auto fail setup" feature you can run the compose file manually:
-`docker-compose up --wait`
+~~~~
+bash initDockerCompose.sh
+~~~~
+   3.1 Alternatively, without the "auto fail setup" feature you can run the compose file manually:
+   ~~~~
+   docker-compose up --wait
+   ~~~~
 
 ## Management
 * Read the log files
-`docker-compose logs {OPTIONAL:$SERVICE_NAME}`
+~~~~
+docker-compose logs {OPTIONAL:$SERVICE_NAME}
+~~~~
 examples:
-`docker-compose logs ansible`
+~~~~
+docker-compose logs ansible
+docker-compose logs esnode1
+docker-compose logs kibana
+docker-compose logs setup
+~~~~
 * Attach to the containers for STDOUT live log output
-`docker-compose up`
+~~~~
+docker-compose up
+~~~~
 
 ## Improvements i would make:
 1. Setup API keys for Kibana for more security.
