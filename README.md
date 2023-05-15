@@ -74,5 +74,5 @@ TBA.
 6. Configure Ansible properly with (ex. /etc/hosts, config, setup j2 templates).
      * Bonus Idea: Create a separate network for Ansible container, setup /etc/hosts and test the API automatically from external network.
 7. Create Ansible Playbook requests to check if index and data view with that name already exist. (Currently just ignoring the failed PUT/POST requests).
-8. Create Ansible it's own access for the endpoint testing. More security!
+8. Create Ansible it's own Kibana and Elasticsearch user access for the endpoint testing. More security!
 
